@@ -2,9 +2,10 @@ from keep_alive import keep_alive
 import discord
 import os
 import time
+import pickle 
 client = discord.Client()
 
-todolist = []
+allTodo = {}
 
 second = 0
 #time lapse shi
@@ -28,6 +29,9 @@ async def on_ready():
 async def on_message(message):
     if message.author == client.user:
         return
+    else:
+      print(message.author.id)
+      await message.channel.send(message.author.id)
 
     if message.content.startswith('$hello'):
         await message.channel.send('Hello!')
@@ -43,7 +47,8 @@ async def on_message(message):
       time_lapsed = end_time - start_time
       time_convert(time_lapsed)
       await message.channel.send("Time spent: " + time_convert(time_lapsed))
-
+    if message.content.startswith("$todos"):
+      
   
 
 keep_alive()
