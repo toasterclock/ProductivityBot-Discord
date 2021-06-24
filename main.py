@@ -1,14 +1,17 @@
+
 from keep_alive import keep_alive
 import discord
 import os
 import time
 import json
-
+#Made by @toasterclock
 client = discord.Client()
 
-allTodo = {}
+allTodo = json.load(open("todolist.txt"))
 allTimer = {}
 yourLastTimings = {}
+
+#Functions
 
 def newTimer(theID):
   allTimer[theID] = time.time()
@@ -35,8 +38,27 @@ def editPeopleList(theID, addTodoItem):
 def listPeopleList(theID):
   return "Your To Do List: " + '\n' + allTodo[theID]
 
+
+def removePeopleList(theID, removeIndex):
+  todoSplit = allTodo[theID].replace(" ", "%").split()
+  #Split into list items + replace spaces with percentage sign so that spaced words dont get split apart?
+  global whatWasRemoved
+  removeIndex -= 1
+  removePeopleList.whatWasRemoved = todoSplit[removeIndex].replace("%", " ")
+  todoSplit.pop(removeIndex)
+  todoSplit = str(todoSplit)
+  todoSplit = todoSplit.replace('[','')
+  todoSplit = todoSplit.replace("'",'')
+  todoSplit = todoSplit.replace(',','\n')
+  todoSplit = todoSplit.replace(']','')
+  todoSplit = todoSplit.replace(' ','')
+  todoSplit = todoSplit.replace('%',' ')
+  allTodo[theID] = todoSplit
+  print(allTodo[theID])
+ 
+
 second = 0
-#time lapse shi
+#stopwatch conversion
 def time_convert(sec):
   mins = sec // 60
   second = sec % 60
@@ -72,19 +94,20 @@ async def on_message(message):
       stopTimer(whoTimedThis)
       await message.channel.send("Time spent: " + allTimer[whoTimedThis])
     
-    if message.content.startswith("$todos"):
-      whoSentThis = message.author.id
+    if message.content.lower() == '$todos':
+      whoSentThis = str(message.author.id)
       if whoSentThis not in allTodo:
         addPeopleToDo(whoSentThis)
         await message.channel.send("(For first time users) Creating your todo list. ")
       else:
-        whoSentThis = message.author.id
         await message.channel.send(listPeopleList(whoSentThis))
 
     if message.content.startswith("$todos add"):
-      cmd = message.content[10:]
+      cmd = message.content[11:]
       print(cmd)
-      whoSentThis = message.author.id
+      #Who Sent This?
+      whoSentThis = str(message.author.id)
+      #ensure that a key is created for each user
       if whoSentThis not in allTodo:
         addPeopleToDo(whoSentThis)
         editPeopleList(whoSentThis, cmd)
@@ -93,10 +116,27 @@ async def on_message(message):
         await message.channel.send(listPeopleList(whoSentThis))
       else:
         editPeopleList(whoSentThis, cmd)
+        #return messages + save to todolist.txt
         await message.channel.send("Added: " + cmd)
         json.dump(allTodo, open("todolist.txt",'w'))
         await message.channel.send(listPeopleList(whoSentThis))
-    
+
+    #todos remove
+    if message.content.startswith('$todos remove'):
+      whoSentThis = str(message.author.id)
+      #get rid of $todos remove in the string
+      cmdremove = message.content[14:]
+      print(cmdremove)
+      global whatWasRemoved
+      # Read what is about to be removed from the Todo list
+      removePeopleList(whoSentThis, int(cmdremove))
+      aboutToRemove = removePeopleList.whatWasRemoved
+      #Save to todolist.txt
+      json.dump(allTodo, open("todolist.txt",'w'))
+      #return messages
+      await message.channel.send("Removed: " + aboutToRemove)
+      await message.channel.send(listPeopleList(whoSentThis))
+
         
 
 json.dump(allTodo, open("todolist.txt",'w'))
