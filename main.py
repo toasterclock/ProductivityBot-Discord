@@ -80,16 +80,18 @@ async def on_ready():
 async def on_message(message):
     if message.author == client.user:
         return
-    else:
-      print(message.author.id)
+
+
 
     if message.content == "$help":
         embedHelp = discord.Embed(
-        title="Help", 
+        title="How to use the Productivity Bot", 
         description="Some useful commands",
         colour=discord.Colour.blue())
         embedHelp.add_field(name="$startwatch", value="Starts Stopwatch")
         embedHelp.add_field(name="$stopwatch", value="Ends Stopwatch")
+        embedHelp.add_field(name="$Todos", value="Your very own personal todo list. Use $todos add (name) and $todos remove (name)")
+        embedHelp.set_footer(text='Enjoy your stay!')
         await message.channel.send(content=None, embed=embedHelp)
 
     if message.content.startswith("$startwatch"):
@@ -126,7 +128,7 @@ async def on_message(message):
       if whoSentThis not in allTodo:
         addPeopleToDo(whoSentThis)
         embedTodos = discord.Embed(title="✅ "+ "Your Todo List has been created.")
-        embedTodos.setFooter(text="This applies to first time users only")
+        embedTodos.set_footer(text="This applies to first time users only")
         
 
         await message.channel.send(content=None, embed=embedTodos)
@@ -156,7 +158,7 @@ async def on_message(message):
 
     #todos remove
     if message.content.startswith('$todos remove'):
-      whoSentThis = str(message.author.id)
+      whoSentThis =  str(message.author.id)
       #get rid of $todos remove in the string
       cmdremove = message.content[14:]
       print(cmdremove)
