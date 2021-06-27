@@ -32,19 +32,12 @@ def addPeopleToDo(theID):
   return 'Added'
 
 def editPeopleList(theID, addTodoItem):
-  allTodo[theID] += addTodoItem + '\n'
+  allTodo[theID] += "● " + addTodoItem + '\n'
   listPeopleList(theID)
   return listPeopleList(theID)
 
 def listPeopleList(theID):
-  conversionList = allTodo[theID].replace(' ', '%')
-  conversionList = conversionList.replace('\n',' ')
-  conversionList = conversionList.split()
-  for item in range(len(conversionList)):
-    if '%' in conversionList[item]:
-      conversionList[item] = conversionList[item].replace('%', ' ')
-  print(conversionList)
-  return conversionList
+  return allTodo[theID]
 
 
 def removePeopleList(theID, removeIndex):
@@ -132,16 +125,15 @@ async def on_message(message):
       whoSentThis = str(message.author.id)
       if whoSentThis not in allTodo:
         addPeopleToDo(whoSentThis)
-
-        embedTodos = discord.Embed(title="📝 "+"Your Todo List")
+        embedTodos = discord.Embed(title="✅ "+ "Your Todo List has been created.")
+        embedTodos.setFooter(text="This applies to first time users only")
+        
 
         await message.channel.send(content=None, embed=embedTodos)
-        #await message.channel.send("(For first time users) Creating your todo list. ")
       else:
-        embedTodos = discord.Embed(title="📝 "+"Your Todo List")
-        #await message.channel.send(listPeopleList(whoSentThis))
+        embedTodos = discord.Embed(title="📝 "+ "Your Todo List", description=listPeopleList(whoSentThis))
         await message.channel.send(content=None, embed=embedTodos)
-        for todo in listPeopleList
+        
 
     if message.content.startswith("$todos add"):
       cmd = message.content[11:]
