@@ -23,6 +23,7 @@ def stopTimer(theID):
   endTime = ending - starting
   realEndTime = time_convert(endTime)
   allTimer[theID] = realEndTime
+  print(allTimer[theID])
   return allTimer[theID]
 
 
@@ -82,13 +83,18 @@ async def on_message(message):
     else:
       print(message.author.id)
 
-    if message.content.startswith('$ping'):
-        await message.channel.send('i am still alive')
+    if message.content == "$help":
+        embedHelp = discord.Embed(title="Help", description="Some useful commands")
+        embedHelp.add_field(name="$startwatch", value="Starts Stopwatch")
+        embedHelp.add_field(name="$stopwatch", value="Ends Stopwatch")
+        await message.channel.send(content=None, embed=embedHelp)
 
     if message.content.startswith("$startwatch"):
-      whoTimedThis = message.author.id
-      await message.channel.send('Starting stopwatch')
-      newTimer(whoTimedThis)
+        whoTimedThis = message.author.id
+        newTimer(whoTimedThis)
+        embedStartwatch = discord.Embed(title="Stopwatch started", description="To end it, type $stopwatch")
+        await message.channel.send(content=None, embed=embedStartwatch)
+
     if message.content.startswith("$stopwatch"):
       whoTimedThis = message.author.id
       stopTimer(whoTimedThis)
