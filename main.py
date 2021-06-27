@@ -84,26 +84,50 @@ async def on_message(message):
       print(message.author.id)
 
     if message.content == "$help":
-        embedHelp = discord.Embed(title="Help", description="Some useful commands")
+        embedHelp = discord.Embed(
+        title="Help", 
+        description="Some useful commands",
+        colour=discord.Colour.blue())
         embedHelp.add_field(name="$startwatch", value="Starts Stopwatch")
         embedHelp.add_field(name="$stopwatch", value="Ends Stopwatch")
         await message.channel.send(content=None, embed=embedHelp)
 
     if message.content.startswith("$startwatch"):
+
         whoTimedThis = message.author.id
+        user = await client.fetch_user(whoTimedThis)
+
         newTimer(whoTimedThis)
-        embedStartwatch = discord.Embed(title="Stopwatch started", description="To end it, type $stopwatch")
+
+        embedStartwatch = discord.Embed(
+        title="<:datree:858669536885997588>"+ "Stopwatch started", 
+        description="To end it, type $stopwatch",
+        colour=discord.Colour.red())
+        embedStartwatch.set_author(name=user, icon_url=user.avatar_url)
+
         await message.channel.send(content=None, embed=embedStartwatch)
 
     if message.content.startswith("$stopwatch"):
+
       whoTimedThis = message.author.id
+      user = await client.fetch_user(whoTimedThis)
+
+
       stopTimer(whoTimedThis)
-      await message.channel.send("Time spent: " + allTimer[whoTimedThis])
-    
+
+      embedStopwatch = discord.Embed(title="<a:pogoslide:858669948880551966> " + "Time Spent: "+ allTimer[whoTimedThis],
+      colour=discord.Colour.green())
+      embedStopwatch.set_author(name=user, icon_url=user.avatar_url)
+      embedStopwatch.set_footer(text= "Good job!")
+      await message.channel.send(content=None, embed=embedStopwatch)
+      
     if message.content.lower() == '$todos':
       whoSentThis = str(message.author.id)
       if whoSentThis not in allTodo:
         addPeopleToDo(whoSentThis)
+
+        
+
         await message.channel.send("(For first time users) Creating your todo list. ")
       else:
         await message.channel.send(listPeopleList(whoSentThis))
