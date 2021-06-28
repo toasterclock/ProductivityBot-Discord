@@ -22,8 +22,9 @@ def stopTimer(theID):
   starting = allTimer[theID]
   endTime = ending - starting
   realEndTime = time_convert(endTime)
-  allTimer[theID] = realEndTime
-  return allTimer[theID]
+  allTimer[theID] = {}
+  print(realEndTime) #Debugging realendtime
+  return realEndTime
 
 
 def addPeopleToDo(theID):
@@ -56,18 +57,21 @@ def removePeopleList(theID, removeIndex):
   allTodo[theID] = todoSplit
  
 
-second = 0
-#stopwatch conversion
-def time_convert(sec):
-  mins = sec // 60
-  second = sec % 60
-  second = int(second)
-  mins = mins % 60
-  if second < 60:
-    endedTime = str(int(second))+ "s"
-  else:
-    endedTime =str(int(mins)) + "min" + " " + str(int(second))+ "s"
-  return endedTime
+
+#stopwatch conversion FIXED
+def time_convert(seconds): 
+    seconds = seconds % (24 * 3600)
+    hour = seconds // 3600
+    seconds %= 3600
+    minutes = seconds // 60
+    seconds %= 60
+    seconds = round(seconds)
+    minutes = round(minutes)
+    hour = round(hour)
+    if hour > 0:
+      return str(hour) + "h " + str(minutes) + "min " + str(seconds) + "s"
+    else:
+      return str(minutes) + "min " + str(seconds) + "s"
 
 
 @client.event
@@ -111,11 +115,7 @@ async def on_message(message):
 
       whoTimedThis = message.author.id
       user = await client.fetch_user(whoTimedThis)
-
-
-      stopTimer(whoTimedThis)
-
-      embedStopwatch = discord.Embed(title="<a:pogoslide:858669948880551966> " + "Time Spent: "+ allTimer[whoTimedThis],
+      embedStopwatch = discord.Embed(title="<a:pogoslide:858669948880551966> " + "Time Spent: "+ stopTimer(whoTimedThis),
       colour=discord.Colour.green())
       embedStopwatch.set_author(name=user, icon_url=user.avatar_url)
       embedStopwatch.set_footer(text= "Good job!")
