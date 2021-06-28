@@ -3,6 +3,10 @@
 
 <h6>Simple discord productivity bot i made for my computing project</h6>
 
+<h3> Update! What needs to be debugged currently... </h3>
+
+The stopwatch function does not seem to work properly at random times. Will debug. Sorry for the inconvenience!
+
 
 <h3>Features!</h3>
 *New*: Embeds across all functions! <br>
