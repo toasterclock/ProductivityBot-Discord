@@ -70,8 +70,10 @@ def time_convert(seconds):
     hour = round(hour)
     if hour > 0:
       return str(hour) + "h " + str(minutes) + "min " + str(seconds) + "s"
-    else:
+    elif minutes > 0:
       return str(minutes) + "min " + str(seconds) + "s"
+    else:
+      return str(seconds) + "s"
 
 
 @client.event
@@ -97,19 +99,24 @@ async def on_message(message):
         await message.channel.send(content=None, embed=embedHelp)
 
     if message.content.startswith("$startwatch"):
-
         whoTimedThis = message.author.id
         user = await client.fetch_user(whoTimedThis)
+        if whoTimedThis in allTimer:
+          embedStartwatch = discord.Embed(
+          title="❌ "+ "You still have an active stopwatch running", description="Unable to start more than one stopwatch",
+          colour=discord.Colour.red())
+          embedStartwatch.set_author(name=user, icon_url=user.avatar_url)
+          await message.channel.send(content=None, embed=embedStartwatch)
+        else:
+          newTimer(whoTimedThis)
 
-        newTimer(whoTimedThis)
+          embedStartwatch = discord.Embed(
+          title="<:datree:858669536885997588>"+ "Stopwatch started", 
+          description="To end it, type $stopwatch",
+          colour=discord.Colour.red())
+          embedStartwatch.set_author(name=user, icon_url=user.avatar_url)
 
-        embedStartwatch = discord.Embed(
-        title="<:datree:858669536885997588>"+ "Stopwatch started", 
-        description="To end it, type $stopwatch",
-        colour=discord.Colour.red())
-        embedStartwatch.set_author(name=user, icon_url=user.avatar_url)
-
-        await message.channel.send(content=None, embed=embedStartwatch)
+          await message.channel.send(content=None, embed=embedStartwatch)
 
     if message.content.startswith("$stopwatch"):
 
