@@ -5,9 +5,9 @@
 
 
 <h3>Features!</h3>
-*New*: Embeds across all functions! <br>
+*New*: Embeds across all functions!<br>
 - Multi-user To-do Lists<br>
-- Stopwatch (currently broken and is being fixed asap)<br>
+- Stopwatch<br>
 - A help command<br>
 <h3>Upcoming:</h3>
 
