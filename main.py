@@ -1,4 +1,3 @@
-
 from keep_alive import keep_alive
 import discord
 import os
@@ -56,7 +55,9 @@ def removePeopleList(theID, removeIndex):
   todoSplit = todoSplit.replace('%',' ')
   allTodo[theID] = todoSplit
  
-
+def removeAllTodo(theID):
+  allTodo[theID] = ''
+  json.dump(allTodo, open("todolist.txt",'w'))
 
 #stopwatch conversion FIXED
 def time_convert(seconds): 
@@ -130,15 +131,19 @@ async def on_message(message):
       
     if message.content.lower() == '$todos':
       whoSentThis = str(message.author.id)
+      user = await client.fetch_user(whoSentThis)
       if whoSentThis not in allTodo:
         addPeopleToDo(whoSentThis)
         embedTodos = discord.Embed(title="✅ "+ "Your Todo List has been created.")
         embedTodos.set_footer(text="This applies to first time users only")
+        json.dump(allTodo, open("todolist.txt",'w'))
         
 
         await message.channel.send(content=None, embed=embedTodos)
       else:
+        json.dump(allTodo, open("todolist.txt",'w'))
         embedTodos = discord.Embed(title="📝 "+ "Your Todo List", description=listPeopleList(whoSentThis))
+        embedTodos.set_author(name=user, icon_url=user.avatar_url)
         await message.channel.send(content=None, embed=embedTodos)
         
 
@@ -200,6 +205,13 @@ async def on_message(message):
 
       embedTodos = discord.Embed(title="📝 "+ "Your Todo List", description=listPeopleList(whoSentThis))
       await message.channel.send(content=None, embed=embedTodos)
+    if message.content.lower() == "$todos clear":
+      whoSentThis =  str(message.author.id) #Author ID
+      user = await client.fetch_user(whoSentThis)
+      removeAllTodo(whoSentThis)
+      embedClearedTodo = discord.Embed(title="✅ Your Todo List has been cleared")
+      await message.channel.send(content=None, embed=embedClearedTodo)
+
 
         
 
