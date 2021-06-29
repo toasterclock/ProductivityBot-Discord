@@ -8,12 +8,14 @@ client = discord.Client()
 
 allTodo = json.load(open("todolist.txt"))
 allTimer = {}
-yourLastTimings = {}
+#allTimer = json.load(open("timerdebugger.txt"))
+#yourLastTimings = {} (NOT IN USE)
 
 #Functions
 
 def newTimer(theID):
   allTimer[theID] = time.time()
+  #json.dump(allTimer, open("timerdebugger.txt",'w'))
   return 'Starting Stopwatch: ' + str(theID)
 
 def stopTimer(theID):
@@ -21,39 +23,40 @@ def stopTimer(theID):
   starting = allTimer[theID]
   endTime = ending - starting
   realEndTime = time_convert(endTime)
-  allTimer[theID] = {}
+  allTimer.pop(theID, None)
+  #json.dump(allTimer, open("timerdebugger.txt",'w'))
   print(realEndTime) #Debugging realendtime
   return realEndTime
 
 
-def addPeopleToDo(theID):
+def addAllTodo(theID):
   allTodo[theID] = ''
   return 'Added'
 
-def editPeopleList(theID, addTodoItem):
+def editAllTodo(theID, addTodoItem):
   allTodo[theID] += "● " + addTodoItem + '\n'
-  listPeopleList(theID)
-  return listPeopleList(theID)
+  authorTodo(theID)
+  return authorTodo(theID)
 
-def listPeopleList(theID):
+def authorTodo(theID):
   return allTodo[theID]
 
 
-def removePeopleList(theID, removeIndex):
-  todoSplit = allTodo[theID].replace(" ", "%").split()
+def removeTodo(theID, removeIndex):
+  rearrangeTodo = allTodo[theID].replace(" ", "%").split()
   #Split into list items + replace spaces with percentage sign so that spaced words dont get split apart?
   global whatWasRemoved
   removeIndex -= 1
-  removePeopleList.whatWasRemoved = todoSplit[removeIndex].replace("%", " ")
-  todoSplit.pop(removeIndex)
-  todoSplit = str(todoSplit)
-  todoSplit = todoSplit.replace('[','')
-  todoSplit = todoSplit.replace("'",'')
-  todoSplit = todoSplit.replace(',','\n')
-  todoSplit = todoSplit.replace(']','')
-  todoSplit = todoSplit.replace(' ','')
-  todoSplit = todoSplit.replace('%',' ')
-  allTodo[theID] = todoSplit
+  removeTodo.whatWasRemoved = rearrangeTodo[removeIndex].replace("%", " ")
+  rearrangeTodo.pop(removeIndex)
+  rearrangeTodo = str(rearrangeTodo)
+  rearrangeTodo = rearrangeTodo.replace('[','')
+  rearrangeTodo = rearrangeTodo.replace("'",'')
+  rearrangeTodo = rearrangeTodo.replace(',','\n')
+  rearrangeTodo = rearrangeTodo.replace(']','')
+  rearrangeTodo = rearrangeTodo.replace(' ','')
+  rearrangeTodo = rearrangeTodo.replace('%',' ')
+  allTodo[theID] = rearrangeTodo
  
 def removeAllTodo(theID):
   allTodo[theID] = ''
@@ -100,16 +103,16 @@ async def on_message(message):
         await message.channel.send(content=None, embed=embedHelp)
 
     if message.content.startswith("$startwatch"):
-        whoTimedThis = message.author.id
-        user = await client.fetch_user(whoTimedThis)
-        if whoTimedThis in allTimer:
+        timerAuthor = str(message.author.id)
+        user = await client.fetch_user(timerAuthor)
+        if timerAuthor in allTimer:
           embedStartwatch = discord.Embed(
           title="❌ "+ "You still have an active stopwatch running", description="Unable to start more than one stopwatch",
           colour=discord.Colour.red())
           embedStartwatch.set_author(name=user, icon_url=user.avatar_url)
           await message.channel.send(content=None, embed=embedStartwatch)
         else:
-          newTimer(whoTimedThis)
+          newTimer(timerAuthor)
 
           embedStartwatch = discord.Embed(
           title="<:datree:858669536885997588>"+ "Stopwatch started", 
@@ -121,19 +124,19 @@ async def on_message(message):
 
     if message.content.startswith("$stopwatch"):
 
-      whoTimedThis = message.author.id
-      user = await client.fetch_user(whoTimedThis)
-      embedStopwatch = discord.Embed(title="<a:pogoslide:858669948880551966> " + "Time Spent: "+ stopTimer(whoTimedThis),
+      timerAuthor = str(message.author.id)
+      user = await client.fetch_user(timerAuthor)
+      embedStopwatch = discord.Embed(title="<a:pogoslide:858669948880551966> " + "Time Spent: "+ stopTimer(timerAuthor),
       colour=discord.Colour.green())
       embedStopwatch.set_author(name=user, icon_url=user.avatar_url)
       embedStopwatch.set_footer(text= "Good job!")
       await message.channel.send(content=None, embed=embedStopwatch)
       
     if message.content.lower() == '$todos':
-      whoSentThis = str(message.author.id)
-      user = await client.fetch_user(whoSentThis)
-      if whoSentThis not in allTodo:
-        addPeopleToDo(whoSentThis)
+      authorSent = str(message.author.id)
+      user = await client.fetch_user(authorSent)
+      if authorSent not in allTodo:
+        addAllTodo(authorSent)
         embedTodos = discord.Embed(title="✅ "+ "Your Todo List has been created.")
         embedTodos.set_footer(text="This applies to first time users only")
         json.dump(allTodo, open("todolist.txt",'w'))
@@ -142,7 +145,7 @@ async def on_message(message):
         await message.channel.send(content=None, embed=embedTodos)
       else:
         json.dump(allTodo, open("todolist.txt",'w'))
-        embedTodos = discord.Embed(title="📝 "+ "Your Todo List", description=listPeopleList(whoSentThis))
+        embedTodos = discord.Embed(title="📝 "+ "Your Todo List", description=authorTodo(authorSent))
         embedTodos.set_author(name=user, icon_url=user.avatar_url)
         await message.channel.send(content=None, embed=embedTodos)
         
@@ -150,12 +153,12 @@ async def on_message(message):
     if message.content.startswith("$todos add"):
       cmd = message.content[11:]
       #Who Sent This?
-      whoSentThis = str(message.author.id)
-      user = await client.fetch_user(whoSentThis)
+      authorSent = str(message.author.id)
+      user = await client.fetch_user(authorSent)
       #ensure that a key is created for each user
-      if whoSentThis not in allTodo:
-        addPeopleToDo(whoSentThis)
-        editPeopleList(whoSentThis, cmd)
+      if authorSent not in allTodo:
+        addAllTodo(authorSent)
+        editAllTodo(authorSent, cmd)
         json.dump(allTodo, open("todolist.txt",'w'))
         embedTodosAdd = discord.Embed(title = "✅ Added "+ '"'+cmd+'"')
 
@@ -165,12 +168,12 @@ async def on_message(message):
 
         await message.channel.send(embed=embedTodosAdd, content = None)
 
-        embedTodos = discord.Embed(title="📝 "+ "Your Todo List", description=listPeopleList(whoSentThis))
+        embedTodos = discord.Embed(title="📝 "+ "Your Todo List", description= authorTodo(authorSent))
         await message.channel.send(content=None, embed=embedTodos)
 
       else:
 
-        editPeopleList(whoSentThis, cmd)
+        editAllTodo(authorSent, cmd)
         json.dump(allTodo, open("todolist.txt",'w'))
         embedTodosAdd = discord.Embed(title = "✅ Added "+ '"'+cmd+'"')
 
@@ -180,19 +183,19 @@ async def on_message(message):
 
         await message.channel.send(embed=embedTodosAdd, content = None)
 
-        embedTodos = discord.Embed(title="📝 "+ "Your Todo List", description=listPeopleList(whoSentThis))
+        embedTodos = discord.Embed(title="📝 "+ "Your Todo List", description=authorTodo(authorSent))
         await message.channel.send(content=None, embed=embedTodos)
 
     #todos remove
     if message.content.startswith('$todos remove'):
-      whoSentThis =  str(message.author.id) #Author ID
-      user = await client.fetch_user(whoSentThis) #Author Username
+      authorSent =  str(message.author.id) #Author ID
+      user = await client.fetch_user(authorSent) #Author Username
       #get rid of $todos remove in the string
       cmdremove = message.content[14:]
       global whatWasRemoved
       # Read what is about to be removed from the Todo list
-      removePeopleList(whoSentThis, int(cmdremove))
-      aboutToRemove = removePeopleList.whatWasRemoved
+      removeTodo(authorSent, int(cmdremove))
+      aboutToRemove = removeTodo.whatWasRemoved
       #Save to todolist.txt
       json.dump(allTodo, open("todolist.txt",'w'))
       embedTodosRemove = discord.Embed(title = "❌ Removed "+ '"'+aboutToRemove+'"')
@@ -203,12 +206,12 @@ async def on_message(message):
       #async send back message
       await message.channel.send(embed=embedTodosRemove, content = None)
 
-      embedTodos = discord.Embed(title="📝 "+ "Your Todo List", description=listPeopleList(whoSentThis))
+      embedTodos = discord.Embed(title="📝 "+ "Your Todo List", description=authorTodo(authorSent))
       await message.channel.send(content=None, embed=embedTodos)
     if message.content.lower() == "$todos clear":
-      whoSentThis =  str(message.author.id) #Author ID
-      user = await client.fetch_user(whoSentThis)
-      removeAllTodo(whoSentThis)
+      authorSent =  str(message.author.id) #Author ID
+      user = await client.fetch_user(authorSent)
+      removeAllTodo(authorSent)
       embedClearedTodo = discord.Embed(title="✅ Your Todo List has been cleared")
       await message.channel.send(content=None, embed=embedClearedTodo)
 
