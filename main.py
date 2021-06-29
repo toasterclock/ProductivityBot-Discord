@@ -98,7 +98,7 @@ async def on_message(message):
         colour=discord.Colour.blue())
         embedHelp.add_field(name="$startwatch", value="Starts Stopwatch")
         embedHelp.add_field(name="$stopwatch", value="Ends Stopwatch")
-        embedHelp.add_field(name="$todos", value="Your very own personal todo list. Use $todos add (name) and $todos remove (name)" ,inline=True)
+        embedHelp.add_field(name="$todos", value="$todos add (name) \n $todos remove (number)\n $todos clear" ,inline=True)
         embedHelp.set_footer(text='Enjoy your stay!')
         await message.channel.send(content=None, embed=embedHelp)
 
@@ -137,7 +137,7 @@ async def on_message(message):
       user = await client.fetch_user(authorSent)
       if authorSent not in allTodo:
         addAllTodo(authorSent)
-        embedTodos = discord.Embed(title="✅ "+ "Your Todo List has been created.")
+        embedTodos = discord.Embed(title="✅ "+ "Your Todo List has been created.", colour=discord.Colour.green())
         embedTodos.set_footer(text="This applies to first time users only")
         json.dump(allTodo, open("todolist.txt",'w'))
         
@@ -145,7 +145,7 @@ async def on_message(message):
         await message.channel.send(content=None, embed=embedTodos)
       else:
         json.dump(allTodo, open("todolist.txt",'w'))
-        embedTodos = discord.Embed(title="📝 "+ "Your Todo List", description=authorTodo(authorSent))
+        embedTodos = discord.Embed(title="📝 "+ "Your Todo List", description=authorTodo(authorSent), colour = discord.Colour.random())
         embedTodos.set_author(name=user, icon_url=user.avatar_url)
         await message.channel.send(content=None, embed=embedTodos)
         
@@ -160,7 +160,7 @@ async def on_message(message):
         addAllTodo(authorSent)
         editAllTodo(authorSent, cmd)
         json.dump(allTodo, open("todolist.txt",'w'))
-        embedTodosAdd = discord.Embed(title = "✅ Added "+ '"'+cmd+'"')
+        embedTodosAdd = discord.Embed(title = "✅ Added "+ '"'+cmd+'"', colour=discord.Colour.green())
 
 
         embedTodosAdd.set_author(name=user, icon_url=user.avatar_url)
@@ -168,14 +168,14 @@ async def on_message(message):
 
         await message.channel.send(embed=embedTodosAdd, content = None)
 
-        embedTodos = discord.Embed(title="📝 "+ "Your Todo List", description= authorTodo(authorSent))
+        embedTodos = discord.Embed(title="📝 "+ "Your Todo List", description=authorTodo(authorSent), colour=discord.Colour.random())
         await message.channel.send(content=None, embed=embedTodos)
 
       else:
 
         editAllTodo(authorSent, cmd)
         json.dump(allTodo, open("todolist.txt",'w'))
-        embedTodosAdd = discord.Embed(title = "✅ Added "+ '"'+cmd+'"')
+        embedTodosAdd = discord.Embed(title = "✅ Added "+ '"'+cmd+'"', colour=discord.Colour.green())
 
 
         embedTodosAdd.set_author(name=user, icon_url=user.avatar_url)
@@ -183,7 +183,7 @@ async def on_message(message):
 
         await message.channel.send(embed=embedTodosAdd, content = None)
 
-        embedTodos = discord.Embed(title="📝 "+ "Your Todo List", description=authorTodo(authorSent))
+        embedTodos = discord.Embed(title="📝 "+ "Your Todo List", description=authorTodo(authorSent), colour = discord.Colour.random())
         await message.channel.send(content=None, embed=embedTodos)
 
     #todos remove
@@ -198,7 +198,7 @@ async def on_message(message):
       aboutToRemove = removeTodo.whatWasRemoved
       #Save to todolist.txt
       json.dump(allTodo, open("todolist.txt",'w'))
-      embedTodosRemove = discord.Embed(title = "❌ Removed "+ '"'+aboutToRemove+'"')
+      embedTodosRemove = discord.Embed(title = "❌ Removed "+ '"'+aboutToRemove+'"', colour=discord.Colour.red())
 
 
       embedTodosRemove.set_author(name=user, icon_url=user.avatar_url)
@@ -206,13 +206,13 @@ async def on_message(message):
       #async send back message
       await message.channel.send(embed=embedTodosRemove, content = None)
 
-      embedTodos = discord.Embed(title="📝 "+ "Your Todo List", description=authorTodo(authorSent))
+      embedTodos = discord.Embed(title="📝 "+ "Your Todo List", description=authorTodo(authorSent), colour=discord.Colour.random())
       await message.channel.send(content=None, embed=embedTodos)
     if message.content.lower() == "$todos clear":
       authorSent =  str(message.author.id) #Author ID
       user = await client.fetch_user(authorSent)
       removeAllTodo(authorSent)
-      embedClearedTodo = discord.Embed(title="✅ Your Todo List has been cleared")
+      embedClearedTodo = discord.Embed(title="✅ Your Todo List has been cleared", colour=discord.Colour.green())
       await message.channel.send(content=None, embed=embedClearedTodo)
 
 
