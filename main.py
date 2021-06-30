@@ -1,14 +1,16 @@
+from replit import db
+#Testing Replit DB but any obviously you can use any DB of your choice or just simply use a .txt file like i did
 from keep_alive import keep_alive
 import discord
 import os
 import time
-import json
+#import json
 #Made by @toasterclock
 client = discord.Client()
 
-allTodo = json.load(open("todolist.txt"))
+#allTodo = json.load(open("todolist.txt"))
 allTimer = {}
-#allTimer = json.load(open("timerdebugger.txt"))
+#allTimer = json.load(open("timerdebugger.txt")) // Used to debug time.time() differences
 #yourLastTimings = {} (NOT IN USE)
 
 #Functions
@@ -25,25 +27,25 @@ def stopTimer(theID):
   realEndTime = time_convert(endTime)
   allTimer.pop(theID, None)
   #json.dump(allTimer, open("timerdebugger.txt",'w'))
-  print(realEndTime) #Debugging realendtime
+  #print(realEndTime) Debugging realendtime
   return realEndTime
 
 
 def addAllTodo(theID):
-  allTodo[theID] = ''
+  db[theID] = ''
   return 'Added'
 
 def editAllTodo(theID, addTodoItem):
-  allTodo[theID] += "● " + addTodoItem + '\n'
+  db[theID] += "● " + addTodoItem + '\n'
   authorTodo(theID)
   return authorTodo(theID)
 
 def authorTodo(theID):
-  return allTodo[theID]
+  return db[theID]
 
 
 def removeTodo(theID, removeIndex):
-  rearrangeTodo = allTodo[theID].replace(" ", "%").split()
+  rearrangeTodo = db[theID].replace(" ", "%").split()
   #Split into list items + replace spaces with percentage sign so that spaced words dont get split apart?
   global whatWasRemoved
   removeIndex -= 1
@@ -56,11 +58,11 @@ def removeTodo(theID, removeIndex):
   rearrangeTodo = rearrangeTodo.replace(']','')
   rearrangeTodo = rearrangeTodo.replace(' ','')
   rearrangeTodo = rearrangeTodo.replace('%',' ')
-  allTodo[theID] = rearrangeTodo
+  db[theID] = rearrangeTodo
  
 def removeAllTodo(theID):
-  allTodo[theID] = ''
-  json.dump(allTodo, open("todolist.txt",'w'))
+  db[theID] = ''
+  #json.dump(allTodo, open("todolist.txt",'w'))
 
 #stopwatch conversion FIXED
 def time_convert(seconds): 
@@ -135,16 +137,17 @@ async def on_message(message):
     if message.content.lower() == '$todos':
       authorSent = str(message.author.id)
       user = await client.fetch_user(authorSent)
-      if authorSent not in allTodo:
+      keys = db.keys()
+      if authorSent not in db.keys():
         addAllTodo(authorSent)
         embedTodos = discord.Embed(title="✅ "+ "Your Todo List has been created.", colour=discord.Colour.green())
         embedTodos.set_footer(text="This applies to first time users only")
-        json.dump(allTodo, open("todolist.txt",'w'))
+        #json.dump(allTodo, open("todolist.txt",'w'))
         
 
         await message.channel.send(content=None, embed=embedTodos)
       else:
-        json.dump(allTodo, open("todolist.txt",'w'))
+        #json.dump(allTodo, open("todolist.txt",'w'))
         embedTodos = discord.Embed(title="📝 "+ "Your Todo List", description=authorTodo(authorSent), colour = discord.Colour.random())
         embedTodos.set_author(name=user, icon_url=user.avatar_url)
         await message.channel.send(content=None, embed=embedTodos)
@@ -156,10 +159,10 @@ async def on_message(message):
       authorSent = str(message.author.id)
       user = await client.fetch_user(authorSent)
       #ensure that a key is created for each user
-      if authorSent not in allTodo:
+      if authorSent not in db.keys():
         addAllTodo(authorSent)
         editAllTodo(authorSent, cmd)
-        json.dump(allTodo, open("todolist.txt",'w'))
+        #json.dump(allTodo, open("todolist.txt",'w')) // If you use a text file
         embedTodosAdd = discord.Embed(title = "✅ Added "+ '"'+cmd+'"', colour=discord.Colour.green())
 
 
@@ -174,7 +177,7 @@ async def on_message(message):
       else:
 
         editAllTodo(authorSent, cmd)
-        json.dump(allTodo, open("todolist.txt",'w'))
+        #json.dump(allTodo, open("todolist.txt",'w')) // If you use a text file
         embedTodosAdd = discord.Embed(title = "✅ Added "+ '"'+cmd+'"', colour=discord.Colour.green())
 
 
@@ -196,8 +199,7 @@ async def on_message(message):
       # Read what is about to be removed from the Todo list
       removeTodo(authorSent, int(cmdremove))
       aboutToRemove = removeTodo.whatWasRemoved
-      #Save to todolist.txt
-      json.dump(allTodo, open("todolist.txt",'w'))
+      #json.dump(allTodo, open("todolist.txt",'w')) // If you use a text file
       embedTodosRemove = discord.Embed(title = "❌ Removed "+ '"'+aboutToRemove+'"', colour=discord.Colour.red())
 
 
@@ -218,7 +220,7 @@ async def on_message(message):
 
         
 
-json.dump(allTodo, open("todolist.txt",'w'))
+#json.dump(allTodo, open("todolist.txt",'w')) // If you use a text file
 
   
 keep_alive()
