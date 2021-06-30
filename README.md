@@ -1,4 +1,4 @@
-# Study Bot / Productivity Bot
+# ProductivityBot for Discord
 
 
 <h6>Simple discord productivity bot i made for my computing project</h6>
