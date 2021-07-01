@@ -5,8 +5,8 @@
 
 
 ## Features!
-**New**: Embeds across all functions! Now everything looks twice as pretty!
-**Also New!**- Server to-do lists (for those Class Homework Lists or Collaborative work)
+**New**: Embeds across all functions! Now everything looks twice as pretty!  
+**Also New!**: Server to-do lists (for those Class Homework Lists or Collaborative work)  
 - Multi-user To-do Lists
 - Stopwatch
 - A help command
