@@ -13,7 +13,6 @@
 ## Upcoming:
 
 - History of your productivity sessions (Unconfirmed)
-- An automated timer/stopwatch (based on when a user joins a "work" voice channel) (Unconfirmed)
 - Points and Leaderboards system to see who did the most work (by stopwatch)
 
 ## Usage/Setup:
