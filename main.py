@@ -93,7 +93,7 @@ async def on_message(message):
 
 
 
-    if message.content == "$help":
+    if message.content.lower() == "$help":
         embedHelp = discord.Embed(
         title="How to use the Productivity Bot", 
         description="Some useful commands",
@@ -138,7 +138,6 @@ async def on_message(message):
     if message.content.lower() == '$todos':
       authorSent = str(message.author.id)
       user = await client.fetch_user(authorSent)
-      keys = db.keys()
       if authorSent not in db.keys():
         addAllTodo(authorSent)
         embedTodos = discord.Embed(title="✅ "+ "Your Todo List has been created.", colour=discord.Colour.green())
@@ -220,7 +219,7 @@ async def on_message(message):
 
 
     # Server List
-    if message.content.startswith("$hw"):
+    if message.content.lower() == "$hw":
       authorSent = str(message.guild.id)
       if authorSent not in db.keys():
         addAllTodo(authorSent)
