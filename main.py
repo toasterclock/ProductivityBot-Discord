@@ -101,6 +101,7 @@ async def on_message(message):
         embedHelp.add_field(name="$startwatch", value="Starts Stopwatch")
         embedHelp.add_field(name="$stopwatch", value="Ends Stopwatch")
         embedHelp.add_field(name="$todos", value="$todos add (name) \n $todos remove (number)\n $todos clear" ,inline=True)
+        embedHelp.add_field(name="$hw", value="$hw add (name) \n $hw remove (number) \n $hw clear")
         embedHelp.set_footer(text='Enjoy your stay!')
         await message.channel.send(content=None, embed=embedHelp)
 
@@ -152,7 +153,7 @@ async def on_message(message):
         embedTodos.set_author(name=user, icon_url=user.avatar_url)
         await message.channel.send(content=None, embed=embedTodos)
         
-
+    #Individual Todo Lists
     if message.content.startswith("$todos add"):
       cmd = message.content[11:]
       #Who Sent This?
@@ -218,8 +219,83 @@ async def on_message(message):
       await message.channel.send(content=None, embed=embedClearedTodo)
 
 
+    # Server List
+    if message.content.startswith("$hw"):
+      authorSent = str(message.guild.id)
+      if authorSent not in db.keys():
+        addAllTodo(authorSent)
+        embedTodos = discord.Embed(title="✅ "+ "Server Todo List has been created", colour=discord.Colour.green())
+        embedTodos.set_footer(text="This applies to first time users only")
+        #json.dump(allTodo, open("todolist.txt",'w'))
         
 
+        await message.channel.send(content=None, embed=embedTodos)
+      else:
+        #json.dump(allTodo, open("todolist.txt",'w'))
+        embedTodos = discord.Embed(title="📝 "+ "Server Todo List", description=authorTodo(authorSent), colour = discord.Colour.random())
+        embedTodos.set_author(name=message.guild.name, icon_url=message.guild.icon_url)
+        await message.channel.send(content=None, embed=embedTodos)
+    
+    if message.content.startswith("$hw add"):
+      cmd = message.content[8:]
+      #Who Sent This?
+      authorSent = str(message.guild.id)
+      #ensure that a key is created for each user
+      if authorSent not in db.keys():
+        addAllTodo(authorSent)
+        editAllTodo(authorSent, cmd)
+        #json.dump(allTodo, open("todolist.txt",'w')) // If you use a text file
+        embedTodosAdd = discord.Embed(title = "✅ Added "+ '"'+cmd+'"', colour=discord.Colour.green())
+
+
+        embedTodosAdd.set_author(name=message.guild.name, icon_url=message.guild.icon_url)
+
+
+        await message.channel.send(embed=embedTodosAdd, content = None)
+
+        embedTodos = discord.Embed(title="📝 "+ "Server Todo List", description=authorTodo(authorSent), colour=discord.Colour.random())
+        await message.channel.send(content=None, embed=embedTodos)
+
+      else:
+
+        editAllTodo(authorSent, cmd)
+        #json.dump(allTodo, open("todolist.txt",'w')) // If you use a text file
+        embedTodosAdd = discord.Embed(title = "✅ Added "+ '"'+cmd+'"', colour=discord.Colour.green())
+
+
+        embedTodosAdd.set_author(name=message.guild.name, icon_url=message.guild.icon_url)
+
+
+        await message.channel.send(embed=embedTodosAdd, content = None)
+
+        embedTodos = discord.Embed(title="📝 "+ "Server Todo List", description=authorTodo(authorSent), colour = discord.Colour.random())
+        await message.channel.send(content=None, embed=embedTodos)
+
+    if message.content.startswith('$hw remove'):
+      authorSent = str(message.guild.id) #Server ID
+      #get rid of $todos remove in the string
+      cmdremove = message.content[11:]
+      global whatWasRemoved
+      # Read what is about to be removed from the Todo list
+      removeTodo(authorSent, int(cmdremove))
+      aboutToRemove = removeTodo.whatWasRemoved
+      #json.dump(allTodo, open("todolist.txt",'w')) // If you use a text file
+      embedTodosRemove = discord.Embed(title = "❌ Removed "+ '"'+aboutToRemove+'"', colour=discord.Colour.red())
+
+
+      embedTodosRemove.set_author(name=message.guild.name, icon_url=message.guild.icon_url)
+
+      #async send back message
+      await message.channel.send(embed=embedTodosRemove, content = None)
+
+      embedTodos = discord.Embed(title="📝 "+ "Server Todo List", description=authorTodo(authorSent), colour=discord.Colour.random())
+      await message.channel.send(content=None, embed=embedTodos)
+
+    if message.content.lower() == "$hw clear":
+      authorSent =  str(message.guild.id) #Author ID
+      removeAllTodo(authorSent)
+      embedClearedTodo = discord.Embed(title="✅ Your Server's Todo List has been cleared", colour=discord.Colour.green())
+      await message.channel.send(content=None, embed=embedClearedTodo)
 #json.dump(allTodo, open("todolist.txt",'w')) // If you use a text file
 
   
