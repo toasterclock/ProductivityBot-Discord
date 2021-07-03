@@ -315,7 +315,7 @@ async def on_voice_state_update(member, before, after):
             print(memids) #print info
             await member.guild.system_channel.send(memids)
     if before.channel is not None and after.channel is None:
-        if after.channel.id == 857610586577436682:
+        if before.channel.id == 857610586577436682:
           vcName = client.get_channel(857610586577436682)
           await member.guild.system_channel.send(f"User Left {vcName}")
           members = vcName.members #finds members connected to the channel
