@@ -85,7 +85,16 @@ def time_convert(seconds):
 @client.event
 async def on_ready():
     print('Connection successful,  {0.user}'.format(client))
-
+    client.change_presence(game=discord.Game(name='$help'))
+#Under Development - On Bot Join: Send Messages
+@client.event
+async def on_guild_join(message):
+  embedBotJoinServer = discord.Embed(
+        title="Welcome to ProductivityBot", colour = discord.Colour.random())
+  embedBotJoinServer.add_field(name="First-time setup", value="Please use ```$set studyvc (channelname)``` to set your desired Study Voice Channel \n Use $help for command usage.")
+  embedBotJoinServer.set_footer(text='Enjoy your stay!')
+  await message.system_channel.send(content = None, embed = embedBotJoinServer)
+  print("First-time setup sent")
 #All Commands reside below this comment
 @client.event
 async def on_message(message):
@@ -103,7 +112,6 @@ async def on_message(message):
         embedHelp.add_field(name="$stopwatch", value="Ends Stopwatch")
         embedHelp.add_field(name="$todos", value="$todos add (name) \n $todos remove (number)\n $todos clear" ,inline=True)
         embedHelp.add_field(name="$hw", value="$hw add (name) \n $hw remove (number) \n $hw clear")
-        embedHelp.set_footer(text='Enjoy your stay!')
         await message.channel.send(content=None, embed=embedHelp)
 
     if message.content.startswith("$startwatch"):
@@ -298,8 +306,12 @@ async def on_message(message):
       await message.channel.send(content=None, embed=embedClearedTodo)
 #json.dump(allTodo, open("todolist.txt",'w')) // If you use a text file
 
+    #FIRST TIME SETUP: Setting Study Voice channel
+    if message.content.startswith('$set'):
+      authorSent = str(message.author.id)
 
-# Under Development
+
+# Under Development - Voice Channel Logging
 @client.event
 async def on_voice_state_update(member, before, after):
     if before.channel is None and after.channel is not None:
