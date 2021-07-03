@@ -81,11 +81,12 @@ def time_convert(seconds):
     else:
       return str(seconds) + "s"
 
-
+#On Ready - prints that its ready
 @client.event
 async def on_ready():
     print('Connection successful,  {0.user}'.format(client))
 
+#All Commands reside below this comment
 @client.event
 async def on_message(message):
     if message.author == client.user:
@@ -297,6 +298,34 @@ async def on_message(message):
       await message.channel.send(content=None, embed=embedClearedTodo)
 #json.dump(allTodo, open("todolist.txt",'w')) // If you use a text file
 
+
+# Under Development
+@client.event
+async def on_voice_state_update(member, before, after):
+    if before.channel is None and after.channel is not None:
+        if after.channel.id == 857610586577436682:
+          vcName = client.get_channel(857610586577436682)
+          await member.guild.system_channel.send(f"User Joined {vcName}")
+          members = vcName.members #finds members connected to the channel
+
+          memids = [] #(list)
+          for member in members:
+            memids.append(member.id)
+
+            print(memids) #print info
+            await member.guild.system_channel.send(memids)
+    if before.channel is not None and after.channel is None:
+        if after.channel.id == 857610586577436682:
+          vcName = client.get_channel(857610586577436682)
+          await member.guild.system_channel.send(f"User Left {vcName}")
+          members = vcName.members #finds members connected to the channel
+
+          memids = [] #(list)
+          for member in members:
+            memids.append(member.id)
+
+            print(memids) #print info
+            await member.guild.system_channel.send(memids)
   
 keep_alive()
 client.run(os.getenv('TOKEN'))
