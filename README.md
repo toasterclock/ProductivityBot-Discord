@@ -18,11 +18,13 @@
 ## Usage/Setup:
 
 ### Ways to make the Todo List work:
+###### Please let me know how I can improve this section
 - Repl.it Database (what I currently use and think is the easiest)
 - Any key-value store
 - A text file
 
-### What you need:  
+### What you need:
+###### Please let me know how I can improve this section
 - .env file with this inside (discord bot token):
 ```TOKEN = your discord bot token```
   - [Guide](https://www.writebots.com/discord-bot-token/)
@@ -30,6 +32,7 @@
   - [discord.py](https://pypi.org/project/discord.py/)
 
 - (OPTIONAL if you want to run it online for free)[Repl.it](replit.com)
+
 
 
 ###### This is WIP. Do post an issue or reach out to me if you have any ideas or advice on how I can make this bot better/easier to clone and run
