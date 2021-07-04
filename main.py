@@ -348,6 +348,6 @@ async def on_voice_state_update(member, before, after):
           print(f"{member} left {vcName}") #print info
 
 
-keep_alive()
+
 bot.run(os.getenv('TOKEN'))
 #you can name the Secret/.env anything you want just replace TOKEN with (name)
