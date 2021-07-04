@@ -33,38 +33,27 @@ def stopTimer(theID):
   #print(realEndTime) Debugging realendtime
   return realEndTime
 
-
 def addAllTodo(theID):
-  db[theID] = ''
+  db[theID] = []
   return 'Added'
 
 def editAllTodo(theID, addTodoItem):
-  db[theID] += "● " + addTodoItem + '\n'
+  db[theID] += [addTodoItem]
   authorTodo(theID)
   return authorTodo(theID)
 
 def authorTodo(theID):
-  return db[theID]
-
+  authorReturn = ''
+  for stuff in range(len(db[theID])):
+    authorReturn +=f"{(stuff+1)}. {db[theID][stuff]} \n"
+    print(authorReturn)
+  return authorReturn
 
 def removeTodo(theID, removeIndex):
-  rearrangeTodo = db[theID].replace(" ", "%").split()
-  #Split into list items + replace spaces with percentage sign so that spaced words dont get split apart?
-  global whatWasRemoved
-  removeIndex -= 1
-  removeTodo.whatWasRemoved = rearrangeTodo[removeIndex].replace("%", " ")
-  rearrangeTodo.pop(removeIndex)
-  rearrangeTodo = str(rearrangeTodo)
-  rearrangeTodo = rearrangeTodo.replace('[','')
-  rearrangeTodo = rearrangeTodo.replace("'",'')
-  rearrangeTodo = rearrangeTodo.replace(',','\n')
-  rearrangeTodo = rearrangeTodo.replace(']','')
-  rearrangeTodo = rearrangeTodo.replace(' ','')
-  rearrangeTodo = rearrangeTodo.replace('%',' ')
-  db[theID] = rearrangeTodo
- 
+  db[theID].pop((removeIndex-1))
+  
 def removeAllTodo(theID):
-  db[theID] = ''
+  db[theID] = []
   #json.dump(allTodo, open("todolist.txt",'w'))
 
 #stopwatch conversion FIXED
@@ -94,8 +83,8 @@ async def on_ready():
 async def on_guild_join(ctx):
   embedBotJoinServer = discord.Embed(
         title="Welcome to ProductivityBot", colour = discord.Colour.random())
-  embedBotJoinServer.add_field(name="First-time setup", value="Please use ```$set studyvc (channelname)``` to set your desired Study Voice Channel \n Use $help for command usage.")
-  embedBotJoinServer.set_footer(text='Enjoy your stay!')
+  embedBotJoinServer.add_field(name="First-time setup", value="Created channel ProductivityTimer to the server")
+  embedBotJoinServer.set_footer(text='Join the channel to use the time logger')
   await ctx.system_channel.send(content = None, embed = embedBotJoinServer)
   print("First-time setup sent")
 #All Commands reside below this comment
@@ -212,8 +201,8 @@ async def todos(ctx, *args):
       #get rid of $todos remove in the string
       global whatWasRemoved
       # Read what is about to be removed from the Todo list
+      aboutToRemove = db[authorSent][(cmdremove-1)]
       removeTodo(authorSent, cmdremove)
-      aboutToRemove = removeTodo.whatWasRemoved
       #json.dump(allTodo, open("todolist.txt",'w')) // If you use a text file
       embedTodosRemove = discord.Embed(title = "❌ Removed "+ '"'+aboutToRemove+'"', colour=discord.Colour.red())
 
@@ -295,20 +284,20 @@ async def hw(ctx, *args):
     #todos remove
     elif args[0] == "remove":
       cmdremove = int(args[1])
-      authorSent = str(ctx.guild.id) #Server ID
-      authorRemoved = str(ctx.author.id) #User ID
-      user = ctx.guild.name #username
-      userRemoved = await bot.fetch_user(authorRemoved) #Server name
+      userSent = str(ctx.author.id)
+      authorSent = str(ctx.guild.id)  #Author ID
+      user = ctx.guild.name
+      author2 = await bot.fetch_user(authorSent)  #Author Username
       #get rid of $todos remove in the string
       global whatWasRemoved
       # Read what is about to be removed from the Todo list
+      aboutToRemove = db[authorSent][(cmdremove-1)]
       removeTodo(authorSent, cmdremove)
-      aboutToRemove = removeTodo.whatWasRemoved
       #json.dump(allTodo, open("todolist.txt",'w')) // If you use a text file
       embedTodosRemove = discord.Embed(title = "❌ Removed "+ '"'+aboutToRemove+'"', colour=discord.Colour.red())
 
 
-      embedTodosRemove.set_author(name=userRemoved, icon_url=userRemoved.avatar_url)
+      embedTodosRemove.set_author(name=author2, icon_url=author2.avatar_url)
 
       #async send back message
       await ctx.channel.send(embed=embedTodosRemove, content = None)
@@ -337,28 +326,26 @@ async def hw(ctx, *args):
 # Under Development - Voice Channel Logging
 @bot.event
 async def on_voice_state_update(member, before, after):
-    global usersInCall
     if before.channel is None and after.channel is not None:
-        if after.channel.id == 857610586577436682:
-          vcName = bot.get_channel(857610586577436682)
-          await member.guild.system_channel.send(f"{member}Joined {vcName}")
-          members = vcName.members #finds members connected to the channel
+        vcName = bot.get_channel(after.channel.id)
+        await member.guild.system_channel.send(f"{member} Joined {vcName}")
+        members = vcName.members #finds members connected to the channel
 
-          usersInCall = [] #(list)
-          for member in members:
-            usersInCall.append(member.id)
+        usersInCall = [] #(list)
+        for member in members:
+          usersInCall.append(member.id)
 
-            print(usersInCall) #print info
+          print(f"{member} joined {vcName}") #print info
     if before.channel is not None and after.channel is None:
-        
-        if before.channel.id == 857610586577436682:
-          vcName = bot.get_channel(857610586577436682)
-          await member.guild.system_channel.send(f"{member} Left {vcName}")
-          members = vcName.members #finds members connected to the channel
-          usersRemaining = [] #(list)
-          for member in members:
-            usersRemaining.append(member.id)
-            print(userRemaining) #print info
+        vcName = bot.get_channel(before.channel.id)
+        await member.guild.system_channel.send(f"{member} left {vcName}")
+        members = vcName.members #finds members connected to the channel
+        usersRemaining = []
+        for member in members:
+          usersRemaining.append(member.id)
+          print(f"{member} left {vcName}") #print info
+
 
 keep_alive()
 bot.run(os.getenv('TOKEN'))
+#you can name the Secret/.env anything you want just replace TOKEN with (name)
