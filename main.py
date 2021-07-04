@@ -1,20 +1,22 @@
-from replit import db
-#Testing Replit DB but any obviously you can use any DB of your choice or just simply use a .txt file like i did
-from keep_alive import keep_alive
+from sqlitedict import SqliteDict
+#Testing sqlitedict
 import discord
 from discord.ext import commands
 import os
 import time
-#import json
+from dotenv import load_dotenv
+load_dotenv()
+
 #Made by @toasterclock
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix="$", intents=intents, activity= discord.Activity(type=discord.ActivityType.listening, name="$help"))
 bot.remove_command('help')
 
 #allTodo = json.load(open("todolist.txt"))
+db = SqliteDict('./my_db.sqlite', autocommit=True)
 allTimer = {}
 #allTimer = json.load(open("timerdebugger.txt")) // Used to debug time.time() differences
-#yourLastTimings = {} (NOT IN USE)
+
 
 #Functions
 

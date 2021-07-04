@@ -32,3 +32,6 @@ MANIFEST
 
 #replit Ignore
 .replit
+
+#sqlite ignore
+.sqlite
