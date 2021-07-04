@@ -1,8 +1,8 @@
 # ProductivityBot for Discord
-
+#### Made for Python 3.6 and above
 
 ###### Simple discord productivity bot i made for my computing project
-
+###### Confirmed to work: Python 3.8.8
 
 ## Features!
 **New**: Embeds across all functions! Now everything looks twice as pretty!  
@@ -11,7 +11,7 @@
 - Stopwatch
 - A help command
 ## Upcoming:
-
+- (In progresss) Voice-Channel-Time-Logging stuff
 - History of your productivity sessions (Unconfirmed)
 - Points and Leaderboards system to see who did the most work (by stopwatch)
 
@@ -28,8 +28,7 @@
 - .env file with this inside (discord bot token):
 ```TOKEN = your discord bot token```
   - [Guide](https://www.writebots.com/discord-bot-token/)
-- Ensure discord.py is installed
-  - [discord.py](https://pypi.org/project/discord.py/)
+- install required packages with ```pip install -r requirements.txt```
 
 - (OPTIONAL if you want to run it online for free)[Repl.it](replit.com)
 
