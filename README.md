@@ -8,10 +8,10 @@
 **New**: Embeds across all functions! Now everything looks twice as pretty!  
 **Also New!**: Server to-do lists (for those Class Homework Lists or Collaborative work)  
 - Multi-user To-do Lists
-- Stopwatch
+- Stopwatch (+ Automatic stopwatch!)
+  - simply make a voice channel called ProductivityTimer and join it to start timing
 - A help command
 ## Upcoming:
-- (In progresss) Voice-Channel-Time-Logging stuff
 - History of your productivity sessions (Unconfirmed)
 - Points and Leaderboards system to see who did the most work (by stopwatch)
 
