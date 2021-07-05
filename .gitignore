@@ -35,3 +35,4 @@ MANIFEST
 
 #sqlite ignore
 .sqlite
+my_db.sqlite
