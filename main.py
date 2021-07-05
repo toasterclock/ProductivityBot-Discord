@@ -359,7 +359,22 @@ async def on_voice_state_update(member, before, after):
         embedStopwatch.set_footer(text= "Good job!")
         await studyChannel.send(content=None, embed=embedStopwatch)
 
-
+@bot.command()
+async def alertmsg(ctx,*args):
+  cmd = ''
+  for arg in args:
+    cmd += ' ' + arg
+  if ctx.author.id != 662496683451613204:
+    pass
+  else:
+    for guild in bot.guilds:
+        for channel in guild.channels:
+            if(channel.name == guild.system_channel):
+                await channel.send(cmd)
+            elif (channel.name == 'study-timers'):
+              await channel.send(cmd)
+            elif channel.name == 'general':
+              await channel.send(cmd)
 
 bot.run(os.getenv('TOKEN'))
 #you can name the Secret/.env anything you want just replace TOKEN with (name)
