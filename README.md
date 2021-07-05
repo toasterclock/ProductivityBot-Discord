@@ -1,9 +1,10 @@
 # ProductivityBot for Discord
-#### Made for Python 3.6 and above
+###### Simple Discord Bot for all things Productivity!
+###### Confirmed working on: Python 3.8.8 & 3.9.5
 
-###### Simple discord productivity bot i made for my computing project
-###### Confirmed to work: Python 3.8.8
-
+##### Should I host ProductivityBot and allow people to add it to their servers?
+[![](https://api.gh-polls.com/poll/01F9V2T8HF6JPKDBPPEKAK8S39/Yes!)](https://api.gh-polls.com/poll/01F9V2T8HF6JPKDBPPEKAK8S39/Yes!/vote)  
+[![](https://api.gh-polls.com/poll/01F9V2T8HF6JPKDBPPEKAK8S39/No)](https://api.gh-polls.com/poll/01F9V2T8HF6JPKDBPPEKAK8S39/No/vote)
 ## Features!
 **New**: Embeds across all functions! Now everything looks twice as pretty!  
 **Also New!**: Server to-do lists (for those Class Homework Lists or Collaborative work)  
