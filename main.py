@@ -48,12 +48,16 @@ def authorTodo(theID):
   authorReturn = ''
   for stuff in range(len(db[theID])):
     authorReturn +=f"{(stuff+1)}. {db[theID][stuff]} \n"
-    print(authorReturn)
   return authorReturn
 
+#removeTodo FIXED
 def removeTodo(theID, removeIndex):
-  db[theID].pop((removeIndex-1))
-  
+  removeIndex -= 1
+  temporarydb = db[theID]
+  removeItem = temporarydb[removeIndex]
+  temporarydb.remove(removeItem)
+  db[theID] = temporarydb
+
 def removeAllTodo(theID):
   db[theID] = []
   #json.dump(allTodo, open("todolist.txt",'w'))
@@ -201,12 +205,11 @@ async def todos(ctx, *args):
       authorSent =  str(ctx.author.id) #Author ID
       user = await bot.fetch_user(authorSent) #Author Username
       #get rid of $todos remove in the string
-      global whatWasRemoved
       # Read what is about to be removed from the Todo list
       aboutToRemove = db[authorSent][(cmdremove-1)]
       removeTodo(authorSent, cmdremove)
       #json.dump(allTodo, open("todolist.txt",'w')) // If you use a text file
-      embedTodosRemove = discord.Embed(title = "❌ Removed "+ '"'+aboutToRemove+'"', colour=discord.Colour.red())
+      embedTodosRemove = discord.Embed(title =f"❌ Removed '{aboutToRemove}'", colour=discord.Colour.red())
 
 
       embedTodosRemove.set_author(name=user, icon_url=user.avatar_url)
@@ -289,14 +292,14 @@ async def hw(ctx, *args):
       userSent = str(ctx.author.id)
       authorSent = str(ctx.guild.id)  #Author ID
       user = ctx.guild.name
-      author2 = await bot.fetch_user(authorSent)  #Author Username
+      author2 = await bot.fetch_user(userSent)  #Author Username
       #get rid of $todos remove in the string
       global whatWasRemoved
       # Read what is about to be removed from the Todo list
       aboutToRemove = db[authorSent][(cmdremove-1)]
       removeTodo(authorSent, cmdremove)
       #json.dump(allTodo, open("todolist.txt",'w')) // If you use a text file
-      embedTodosRemove = discord.Embed(title = "❌ Removed "+ '"'+aboutToRemove+'"', colour=discord.Colour.red())
+      embedTodosRemove = discord.Embed(title = f"❌ Removed '{aboutToRemove}'", colour=discord.Colour.red())
 
 
       embedTodosRemove.set_author(name=author2, icon_url=author2.avatar_url)
