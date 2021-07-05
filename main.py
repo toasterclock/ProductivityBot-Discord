@@ -368,8 +368,18 @@ async def remindme(ctx,*args):
     cmd += ' ' + arg
   cmdList = cmd.split()
   timeSet = cmdList.pop(-1)
+  if 's' in timeSet:
+    remindTime = timeSet.replace('s','')
+  elif 'm' in timeSet:
+    remindTime = timeSet.replace('m','')
+    remindTime = remindTime * 60
+  elif 'h' in timeSet:
+    remindTime = timeSet.replace('s','')
+    remindTime = remindTime * 60 * 60
+  elif 'd' in timeSet:
+    remindTime = timeSet.replace('d','')
+    remindTime = remindTime * 60 * 24
   cmd = cmd[:(len(cmd)-len(timeSet))]
-  remindTime = timeSet.replace('s','')
   remindTime = int(remindTime)
   await ctx.send('Reminder set')
   await asyncio.sleep(remindTime)
