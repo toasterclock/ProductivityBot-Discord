@@ -19,7 +19,6 @@ allTimer = {}
 
 
 #Functions
-
 def newTimer(theID):
   allTimer[theID] = time.time()
   #json.dump(allTimer, open("timerdebugger.txt",'w'))
@@ -87,10 +86,16 @@ async def on_ready():
 #Under Development - On Bot Join: Send Messages
 @bot.event
 async def on_guild_join(ctx):
+  await ctx.create_text_channel('study-timers')
+  global studyVoiceChannel
+  global studyChannel
+  studyChannel = discord.utils.get(bot.get_all_channels(), name='study-timers')
+  studyVoiceChannel = discord.utils.get(bot.get_all_channels(), name='ProductivityTimer')
+  await ctx.create_voice_channel('ProductivityTimer')
   embedBotJoinServer = discord.Embed(
         title="Welcome to ProductivityBot", colour = discord.Colour.random())
-  embedBotJoinServer.add_field(name="First-time setup", value="Created channel ProductivityTimer to the server")
-  embedBotJoinServer.set_footer(text='Join the channel to use the time logger')
+  embedBotJoinServer.add_field(name="First-time setup", value="Text and voice channels have been added")
+  embedBotJoinServer.set_footer(text='Use channels #study-timers and #ProductivityTimer to make use of the time logging!')
   await ctx.system_channel.send(content = None, embed = embedBotJoinServer)
   print("First-time setup sent")
 #All Commands reside below this comment
@@ -331,24 +336,28 @@ async def hw(ctx, *args):
 # Under Development - Voice Channel Logging
 @bot.event
 async def on_voice_state_update(member, before, after):
+    studyChannel = discord.utils.get(bot.get_all_channels(), name='study-timers')
+    studyVoiceChannel = discord.utils.get(bot.get_all_channels(), name='ProductivityTimer')
     if before.channel is None and after.channel is not None:
-        vcName = bot.get_channel(after.channel.id)
-        await member.guild.system_channel.send(f"{member} Joined {vcName}")
-        members = vcName.members #finds members connected to the channel
-
-        usersInCall = [] #(list)
-        for member in members:
-          usersInCall.append(member.id)
-
-          print(f"{member} joined {vcName}") #print info
+      if after.channel == studyVoiceChannel:
+        memberVoiceID = str(member.id)
+        user = await bot.fetch_user(memberVoiceID)
+        newTimer(memberVoiceID)
+        embedStartwatch = discord.Embed(
+        title="<:datree:858669536885997588>"+ "Timer started", 
+        description="To end it, leave the ProductivityTimer call",
+        colour=discord.Colour.red())
+        embedStartwatch.set_author(name=user, icon_url=user.avatar_url)
+        await studyChannel.send(content=None, embed=embedStartwatch)
     if before.channel is not None and after.channel is None:
-        vcName = bot.get_channel(before.channel.id)
-        await member.guild.system_channel.send(f"{member} left {vcName}")
-        members = vcName.members #finds members connected to the channel
-        usersRemaining = []
-        for member in members:
-          usersRemaining.append(member.id)
-          print(f"{member} left {vcName}") #print info
+      if before.channel == studyVoiceChannel:
+        memberVoiceID = str(member.id)
+        user = await bot.fetch_user(memberVoiceID)
+        embedStopwatch = discord.Embed(title="<a:pogoslide:858669948880551966> " + "Time Spent: "+ stopTimer(memberVoiceID),
+        colour=discord.Colour.green())
+        embedStopwatch.set_author(name=user, icon_url=user.avatar_url)
+        embedStopwatch.set_footer(text= "Good job!")
+        await studyChannel.send(content=None, embed=embedStopwatch)
 
 
 
