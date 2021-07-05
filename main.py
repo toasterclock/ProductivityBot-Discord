@@ -1,3 +1,4 @@
+import asyncio
 from sqlitedict import SqliteDict
 #Testing sqlitedict
 import discord
@@ -358,6 +359,23 @@ async def on_voice_state_update(member, before, after):
         embedStopwatch.set_author(name=user, icon_url=user.avatar_url)
         embedStopwatch.set_footer(text= "Good job!")
         await studyChannel.send(content=None, embed=embedStopwatch)
+
+@bot.command()
+async def remindme(ctx,*args):
+  remindUser = bot.get_user(int(ctx.author.id))
+  cmd = ''
+  for arg in args:
+    cmd += ' ' + arg
+  cmdList = cmd.split()
+  timeSet = cmdList.pop(-1)
+  cmd = cmd[:(len(cmd)-len(timeSet))]
+  remindTime = timeSet.replace('s','')
+  remindTime = int(remindTime)
+  await ctx.send('Reminder set')
+  await asyncio.sleep(remindTime)
+  await remindUser.send(f'Reminder: {cmd}')
+
+
 
 @bot.command()
 async def alertmsg(ctx,*args):
