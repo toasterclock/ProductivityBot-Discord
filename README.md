@@ -27,7 +27,8 @@
   - [Guide](https://www.writebots.com/discord-bot-token/)
 - install required packages with ```pip install -r requirements.txt```
 
-
+### Credits:
+[sqlitedict](https://github.com/RaRe-Technologies/sqlitedict)
 
 ###### This is WIP. Do post an issue or reach out to me if you have any ideas or advice on how I can make this bot better/easier to clone and run
 
