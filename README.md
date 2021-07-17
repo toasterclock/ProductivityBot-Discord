@@ -1,5 +1,5 @@
 # ProductivityBot for Discord
-###### Simple Discord Bot for all things Productivity!
+###### Simple Discord Bot for all things Productivity (Probably more useful for students)!
 ###### Confirmed working on: Python 3.8.8 & 3.9.5
 
 ##### Should I host ProductivityBot and allow people to add it to their servers?
