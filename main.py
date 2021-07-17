@@ -13,13 +13,41 @@ intents = discord.Intents.all()
 bot = commands.Bot(command_prefix="$", intents=intents, activity= discord.Activity(type=discord.ActivityType.listening, name="$help"))
 bot.remove_command('help')
 
-#allTodo = json.load(open("todolist.txt"))
+
+
+#Databases
+#db refers to Todo list DB
+#timelogdb is not in use yet
+#pointsDB is to store points
 db = SqliteDict('./my_db.sqlite', autocommit=True)
+timeLogDB = SqliteDict('./timeLog.sqlite', autocommit=True)
+pointsDB = SqliteDict('./points.sqlite', autocommit=True)
 allTimer = {}
-#allTimer = json.load(open("timerdebugger.txt")) // Used to debug time.time() differences
-
-
 #Functions
+
+#points system
+#counts the number of seconds to 3 decimal places
+#When displaying points, it will auto convert to points system
+def timeToPoints(theID,endTime):
+  points = 0
+  points = endTime
+  if theID in pointsDB.keys():
+    pointsToInt = float(pointsDB[theID])
+    pointsToInt += points
+    pointsDB[theID] = str(round(pointsToInt,3))
+  else:
+    pointsDB[theID] = ''
+    pointsDB[theID] = str(round(points,3))
+  print(pointsDB[theID])
+
+def pointsDisplayer(theID):
+  pointsData = 0
+  pointsData = float(pointsDB[theID]) / 60
+  pointsData = round(pointsData,3)
+  return pointsData
+
+
+
 def newTimer(theID):
   allTimer[theID] = time.time()
   #json.dump(allTimer, open("timerdebugger.txt",'w'))
@@ -33,6 +61,7 @@ def stopTimer(theID):
   allTimer.pop(theID, None)
   #json.dump(allTimer, open("timerdebugger.txt",'w'))
   #print(realEndTime) Debugging realendtime
+  timeToPoints(theID,endTime)
   return realEndTime
 
 def addAllTodo(theID):
@@ -61,6 +90,7 @@ def removeTodo(theID, removeIndex):
 def removeAllTodo(theID):
   db[theID] = []
   #json.dump(allTodo, open("todolist.txt",'w'))
+
 
 #stopwatch conversion FIXED
 def time_convert(seconds): 
@@ -144,7 +174,7 @@ async def stopwatch(ctx):
     embedStopwatch = discord.Embed(title="<a:pogoslide:858669948880551966> " + "Time Spent: "+ stopTimer(timerAuthor),
     colour=discord.Colour.green())
     embedStopwatch.set_author(name=user, icon_url=user.avatar_url)
-    embedStopwatch.set_footer(text= "Good job!")
+    embedStopwatch.set_footer(text= f"Good job! You have {pointsDisplayer(timerAuthor)} points!")
     await ctx.channel.send(content=None, embed=embedStopwatch)
   
 @bot.command()
