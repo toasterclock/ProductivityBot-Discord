@@ -367,8 +367,8 @@ async def hw(ctx, *args):
 # Under Development - Voice Channel Logging
 @bot.event
 async def on_voice_state_update(member, before, after):
-    studyChannel = discord.utils.get(bot.get_all_channels(), name='study-timers')
-    studyVoiceChannel = discord.utils.get(bot.get_all_channels(), name='ProductivityTimer')
+    studyChannel = discord.utils.get(member.guild.channels, name='study-timers')
+    studyVoiceChannel = discord.utils.get(member.guild.channels, name='ProductivityTimer')
     if before.channel is None and after.channel is not None:
       if after.channel == studyVoiceChannel:
         memberVoiceID = str(member.id)
@@ -387,7 +387,7 @@ async def on_voice_state_update(member, before, after):
         embedStopwatch = discord.Embed(title="<a:pogoslide:858669948880551966> " + "Time Spent: "+ stopTimer(memberVoiceID),
         colour=discord.Colour.green())
         embedStopwatch.set_author(name=user, icon_url=user.avatar_url)
-        embedStopwatch.set_footer(text= "Good job!")
+        embedStopwatch.set_footer(text= f"Good job! You have {pointsDisplayer(memberVoiceID)} points")
         await studyChannel.send(content=None, embed=embedStopwatch)
 
 @bot.command()
@@ -422,7 +422,7 @@ async def alertmsg(ctx,*args):
   cmd = ''
   for arg in args:
     cmd += ' ' + arg
-  if ctx.author.id != 662496683451613204:
+  if ctx.author.id != 662496683451613204: #This is to allow me (or anyone using running this bot locally) to send alert messages! 
     pass
   else:
     for guild in bot.guilds:
