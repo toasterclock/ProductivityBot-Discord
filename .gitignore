@@ -36,3 +36,5 @@ MANIFEST
 #sqlite ignore
 .sqlite
 my_db.sqlite
+points.sqlite
+*.sqlite
