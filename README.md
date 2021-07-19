@@ -1,10 +1,12 @@
 # ProductivityBot for Discord
-###### Simple Discord Bot for all things Productivity (Probably more useful for students)!
-###### Confirmed working on: Python 3.8.8 & 3.9.5
+###### Basically a better To-do list, and some easter eggs
+###### Confirmed working on: Python > 3.7
 
-##### Should I host ProductivityBot and allow people to add it to their servers?
-[![](https://api.gh-polls.com/poll/01F9V2T8HF6JPKDBPPEKAK8S39/Yes!)](https://api.gh-polls.com/poll/01F9V2T8HF6JPKDBPPEKAK8S39/Yes!/vote)  
-[![](https://api.gh-polls.com/poll/01F9V2T8HF6JPKDBPPEKAK8S39/No)](https://api.gh-polls.com/poll/01F9V2T8HF6JPKDBPPEKAK8S39/No/vote)
+##### ProductivityBot might go online, but I'm still considering where to host it.
+##### New features are underway, and not all of them will be open-sourced (sorry!)
+
+
+
 ## Features!
 **New**: Embeds across all functions! Now everything looks twice as pretty!  
 **Also New!**: Server to-do lists (for those Class Homework Lists or Collaborative work)  
