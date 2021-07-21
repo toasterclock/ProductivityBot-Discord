@@ -1,6 +1,6 @@
 import asyncio
 from sqlitedict import SqliteDict
-#Testing sqlitedict
+import pandas as pd #SqLiteDict + Pandas why do i feel like it could be a lot less complicated and im just overcomplicating it
 import discord
 from discord.ext import commands
 import os
@@ -16,14 +16,44 @@ bot.remove_command('help')
 
 
 #Databases
-#db refers to Todo list DB
-#timelogdb is not in use yet
-#pointsDB is to store points
-db = SqliteDict('./my_db.sqlite', autocommit=True)
-timeLogDB = SqliteDict('./timeLog.sqlite', autocommit=True)
-pointsDB = SqliteDict('./points.sqlite', autocommit=True)
+#db (todos database)
+#timelog (not in use)
+#points (points database)
+db = SqliteDict('./todos.db', autocommit=True)
+#timeLogDB = SqliteDict('./timeLog.db', autocommit=True)
+pointsDB = SqliteDict('./points.db', autocommit=True)
+#temporary timing storage
 allTimer = {}
 #Functions
+
+def createTable(theID):
+    df = pd.DataFrame({'todo': [], 'tag': []})
+    db[theID] = df
+    return df
+
+def addToTable(theID,todo,tag):
+    df = db[theID]
+    df.loc[-1] = [todo,tag]
+    df.index = df.index + 1
+    df = df.sort_index()
+    df = df.drop_duplicates(['todo', 'tag'])
+    db[theID] = df
+    try:
+      addToTable(theID,todo,tag)
+    except KeyError:
+      createTable(theID)
+      addToTable(theID,todo,tag)
+    return db[theID] 
+
+def removeFromTable(author,index):
+    df = db[author]
+    #if index is 1 then drop index 0 of the database cus python yeah
+    index -= 1
+    df = df.drop(index)
+    db[author] = df
+    return db[author]
+
+
 
 #points system
 #counts the number of seconds to 3 decimal places
