@@ -53,6 +53,16 @@ def removeFromTable(author,index):
     db[author] = df
     return db[author]
 
+def displayTable(author):
+  df = db[author]
+  df = df.sort_values('tag')
+  df = df.sort_index()
+  print(df)
+  authorReturn = ''
+  for stuff in range(len(df)):
+    authorReturn +=f"{(stuff+1)}. {df[stuff]} \n"
+  print(authorReturn)
+  
 
 
 #points system
@@ -230,15 +240,16 @@ async def todos(ctx, *args):
     elif args[0] == "add":
       cmd = ''
       args.pop(0)
+      tag = args.pop(0)
+      #Eg: $todos add physics do the worksheet
+      #tag = physics
+      #cmd (the rest of the args) = do the worksheet
       for arg in args:
         cmd += ' ' + arg
       authorSent = str(ctx.author.id) #Who Sent It
       user = await bot.fetch_user(authorSent)
       #ensure that a key is created for each user
-      if authorSent not in db.keys():
-        addAllTodo(authorSent)
-        editAllTodo(authorSent, cmd)
-        #json.dump(allTodo, open("todolist.txt",'w')) // If you use a text file
+      addToTable(authorSent, cmd, tag)
         embedTodosAdd = discord.Embed(title = "✅ Added "+ '"'+cmd+'"', colour=discord.Colour.green())
 
 
