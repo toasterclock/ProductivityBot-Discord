@@ -13,9 +13,7 @@
 - Multi-user To-do Lists
 - Study Timer + Points system!
   - Tracks how long you study based on how long you are in the Study Call
-## Upcoming:
-- History of your productivity sessions (Unconfirmed)
-- Points and Leaderboards system to see who did the most work (by stopwatch)
+
 
 ## Usage/Setup:
 
@@ -31,7 +29,6 @@
 ### Credits:
 [sqlitedict](https://github.com/RaRe-Technologies/sqlitedict)
 
-###### This is WIP. Do post an issue or reach out to me if you have any ideas or advice on how I can make this bot better/easier to clone and run
 
 
 
