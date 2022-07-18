@@ -2,8 +2,7 @@
 ###### Basically a better To-do list, and some easter eggs
 ###### Confirmed working on: Python > 3.7
 
-##### ProductivityBot might go online, but I'm still considering where to host it.
-##### New features are underway, and not all of them will be open-sourced (sorry!)
+
 
 
 
